@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 
 class Program
 {
@@ -14,12 +12,12 @@ class Program
         using (StreamReader reader = new StreamReader(filePath))
         {
             string line;
-            Dictionary<string, List<double>> stations = [];
+            Dictionary<string, List<decimal>> stations = [];
 
             while ((line = reader.ReadLine()) != null)
             {
                 string station = line.Split(';')[0];
-                double temp = Convert.ToDouble(line.Split(';')[1]);
+                decimal temp = decimal.Parse(line.Split(';')[1]);
 
                 if (stations.ContainsKey(station))
                 {
@@ -31,13 +29,16 @@ class Program
                 }
             }
 
+            var sortedDictionary = stations.OrderBy(x => x.Key)
+                                            .ToDictionary(pair => pair.Key, pair => pair.Value);
+
             Console.Write("{");
-            foreach (var name in stations.Keys)
+            foreach (var name in sortedDictionary.Keys)
             {
                 var tempList = stations[name];
-                var min = double.Round(tempList.Min(), 1);
-                var mean = double.Round(tempList.Average(), 1);
-                var max = double.Round(tempList.Max(), 1);
+                var min = Math.Round(tempList.Min(), 1);
+                var mean = decimal.Round(tempList.Average(), 1);
+                var max = decimal.Round(tempList.Max(), 1);
 
                 Console.Write($"{name}={min}/{mean}/{max}, ");
             }
